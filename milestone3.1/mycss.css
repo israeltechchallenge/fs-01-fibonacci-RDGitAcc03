@@ -1,0 +1,40 @@
+h1 {
+    margin: 100px 0 30px 164px;
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 72px;
+    line-height: 79px;
+
+    color: #373A3C;
+}
+
+span {
+    margin: 236px 0 0 169px;
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 24px;
+
+    color: #373A3C;
+}
+
+input {
+    width: 86px;
+    height: 38px;
+
+    background: #FFF;
+    border: 1px solid #CCCCCC;
+    border-radius: 4px;
+}
+
+button {
+    width: 39px;
+    height: 38px;
+
+    color: #FFF;
+    background: #0275D8;
+    border: 1px solid #0275D8;
+    border-radius: 4px;
+}

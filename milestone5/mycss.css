@@ -1,0 +1,54 @@
+
+* {
+    box-sizing: border-box;
+}
+
+p {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 400;
+    font-size: 72px;
+    color: #373A3C;
+}
+
+span {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 400;
+    font-size: 24px;
+    color: #373A3C;
+}
+
+#index {
+    width: 86px;
+    height: 38px;
+    border-radius: 4px;
+}
+
+#myBtn {
+    width: 38px;
+    height: 39px;
+    background-color: #0275D8;
+    color: #FFF;
+}
+
+.errorMsg {
+    display: inline;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    width: 180px;
+    height: 33px;
+    color: #A94442;;
+    background-color: #F2DEDE;;
+    border: 1px solid #EBCCCC;
+    border-radius: 4px;
+}
+.fortyTwoMsgStyle {
+    display: inline;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    color: #D9534F;
+    background-color: #FFF;
+    border: none;
+    border-radius: 0;
+}
