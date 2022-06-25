@@ -6,42 +6,34 @@ let myIndex = document.getElementById("index");
 let myY = document.getElementById('y');
 let myMsg = document.getElementById('myMsg');
 
-function serverRequestData(url){
-    fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            myArr = data.results;
-            showResults(myArr);
-        });      
+async function serverRequestData(url){
+    const response = await fetch(url);
+    const data = await response.json();
+    myArr = data.results;
+    showResults(myArr);     
 }
+
 let serverMsg = "";
-function serverWriteData(url){
-    fetch(url)
-        .then(response => {
-            try {
-                if (!response.ok) {
-                    return response.text()
-                    .then(text => {
-                        serverMsg = text;
-                        myMsg.classList.remove('errorMsg');
-                        myMsg.classList.add('fortyTwoMsgStyle');
-                        myMsg.innerText = serverMsg;
-                        myY.innerText = 'Y';
-                    })
-                }
-            }
-            catch(err) {    
-                console.log("An Error Occured", err);
-            }
-            finally {
-                spinner.classList.remove("spinner-border");
-                return response.json();
-            }
-        })
-            
-        .then(data => {
-            myY.innerText = data.result;
-        });      
+async function serverWriteData(url){
+    const response = await fetch(url);
+    try {
+        if (!response.ok) {
+            text = await response.text();
+            serverMsg = text;
+            myMsg.classList.remove('errorMsg');
+            myMsg.classList.add('fortyTwoMsgStyle');
+            myMsg.innerText = serverMsg;
+            myY.innerText = 'Y';
+        }
+    }
+    catch(err) {    
+        console.log("An Error Occured", err);
+    }
+    finally {
+        spinner.classList.remove("spinner-border");
+        const data = await response.json();
+        myY.innerText = data.result;      
+    }
 }
 
 let myBtn = document.getElementById('myBtn');
