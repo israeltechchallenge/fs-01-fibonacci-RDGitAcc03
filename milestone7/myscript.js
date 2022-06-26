@@ -5,11 +5,14 @@ let myArr = [];
 let myIndex = document.getElementById("index");
 let myY = document.getElementById('y');
 let myMsg = document.getElementById('myMsg');
+let myCheckBox = document.getElementById('saveCalc');
+let isCalculationSaved; 
 
 async function serverRequestData(url){
     const response = await fetch(url);
     const data = await response.json();
     myArr = data.results;
+    console.log(myArr);
     showResults(myArr);     
 }
 
@@ -32,6 +35,7 @@ async function serverWriteData(url){
     finally {
         spinner.classList.remove("spinner-border");
         const data = await response.json();
+        console.log(data);
         myY.innerText = data.result;      
     }
 }
@@ -40,6 +44,11 @@ let myBtn = document.getElementById('myBtn');
 
 myBtn.addEventListener('click', (e)=> {
     e.preventDefault();
+    isCalculationSaved = document.getElementById('saveCalc').checked;
+    setTimeout(()=> {
+        spinner.classList.remove("spinner-border");
+    }
+    , 2000);
     appendNewResult(myIndex.value);
 });
 
@@ -71,20 +80,37 @@ function appendNewResult(index){
         myY.innerText = 'Y';
         myMsg.innerText = "Can't be larger than 50!";
     }
-    else if (index === 42) {
-        spinner.classList.add("spinner-border");
-        serverWriteData(fibonacciUrl+index);
-    }
     else {
+        myMsg.innerText = "";
         spinner.classList.add("spinner-border");
-
         myMsg.classList.remove('errorMsg');
         myMsg.classList.remove('fortyTwoMsgStyle');
-        myMsg.innerText = "";
 
-
-        serverWriteData(fibonacciUrl+index);
-        serverRequestData(myUrl);
+        if (isCalculationSaved) {        
+            serverWriteData(fibonacciUrl+index);
+            serverRequestData(myUrl);
+        }
+        else {        
+            serverRequestData(myUrl);
+            myY.innerText = FibonacciOfIndex(index);
+        }
     }
+    console.log(isCalculationSaved);
 }
 
+function FibonacciOfIndex(n) { 
+    n = parseInt(myIndex.value); 
+    let a = 0;
+    let b = 1;
+    let sum = 0;
+    if (n === 1) {
+        sum = 1;
+    }
+    for(let i = 1; i < n; i++){
+        sum = a + b;
+        a = b;
+        b = sum;
+    }
+
+    return sum;
+}
