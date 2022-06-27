@@ -10,11 +10,6 @@ let container = document.getElementById('containerDiv');
 let myCheckBox = document.getElementById('saveCalc');
 let isCalculationSaved; 
 let aListDropdown = document.getElementById('aListDropdown');
-let sorted = [];
-let sortedNumAsc = [];
-let sortedNumDesc = [];
-let sortedDateAsc = [];
-let sortedDateDesc = [];
 
 window.addEventListener('load', init);
 
