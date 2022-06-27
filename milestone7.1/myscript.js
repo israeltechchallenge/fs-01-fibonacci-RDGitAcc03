@@ -93,7 +93,7 @@ let spinner = document.getElementById("spinner");
 
 
 function BuildResults() {
-    for (let i= 0; i< myArr.length; i++){
+    for (let i= myArr.length - 1; i>= 0; i--){
         let divItem = document.createElement('div');
         divItem.classList.add('mt-4-div');
         divItem.innerHTML = stringify(myArr[i]);
@@ -118,8 +118,6 @@ function appendNewResult(index){
         myMsg.innerText = "Can't be larger than 50!";
     }
     else {
-
-
         if (isCalculationSaved) {
             if(index === 42){
                 myMsg.classList.remove('errorMsg');
@@ -139,8 +137,6 @@ function appendNewResult(index){
             spinner.classList.add("spinner-border");
             myMsg.classList.remove('errorMsg');
             myMsg.classList.remove('fortyTwoMsgStyle');
-            // updateMyArr(myUrl);
-            init();
             myY.innerText = FibonacciOfIndex(index);
         }
     }
@@ -166,10 +162,10 @@ function FibonacciOfIndex(n) {
 function compareValuesByKeyAndOrder(a, b, order='asc'){
         let comparison = 0;
         if (a > b) {
-            comparison = 1;
+            comparison = -1;
         }
         else if (a < b) {
-            comparison = -1;
+            comparison = 1;
         }
         if(order === 'desc') {
             comparison = comparison * -1; 
