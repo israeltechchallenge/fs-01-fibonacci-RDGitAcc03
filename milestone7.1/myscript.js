@@ -142,6 +142,7 @@ function appendNewResult(index){
     }
 }
 
+
 function FibonacciOfIndex(n) { 
     n = parseInt(myIndex.value); 
     let a = 0;
