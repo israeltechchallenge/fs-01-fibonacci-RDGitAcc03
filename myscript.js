@@ -1,35 +1,46 @@
 
-const myUrl =  "http://localhost:5050/getFibonacciResults";
-let fibonacciUrl = "http://localhost:5050/fibonacci/";
+const resultsURL =  "http://localhost:5050/getFibonacciResults";
+let fibonacciValueURL = "http://localhost:5050/fibonacci/";
 
-let myArr = [];
-let myIndex = document.getElementById("index");
-let myY = document.getElementById('y');
-let myMsg = document.getElementById('myMsg');
-let container = document.getElementById('containerDiv');
-let myCheckBox = document.getElementById('saveCalc');
+
+const fibonacciIndex = document.getElementById("index");
+const fibonacciValue = document.getElementById('y');
+const errorMsg = document.getElementById('myMsg');
+const containerListHolder = document.getElementById('containerDiv');
+const checkBox = document.getElementById('saveCalc');
+const anchorsListDropdown = document.getElementById('aListDropdown');
+const myBtn = document.getElementById('myBtn');
+const spinner = document.getElementById("spinner");
 let isCalculationSaved; 
-let aListDropdown = document.getElementById('aListDropdown');
+let serverMsg = "";
 
-window.addEventListener('load', init);
 
-aListDropdown.addEventListener('click', (e)=> {
-    container.innerHTML = "";
+
+
+
+
+window.addEventListener('load', FetchAndShowResults);
+
+
+
+
+anchorsListDropdown.addEventListener('click', (e)=> {
+    containerListHolder.innerHTML = "";
     if (e.target.innerText  === "Number Asc") {   
-        spinnerOn();  
-        updateMyArr("Number Asc");
+        spinnerOn();    
+        FetchAndShowResults("Number Asc");
     }
     else if (e.target.innerText  === "Number Desc") {
         spinnerOn();  
-        updateMyArr("Number Desc");
+        FetchAndShowResults("Number Desc");
     }
     else if (e.target.innerText  === "Date Asc") {
         spinnerOn();  
-        updateMyArr("Date Asc");
+        FetchAndShowResults("Date Asc");
     }
     else if(e.target.innerText  === "Date Desc") {
         spinnerOn();  
-        updateMyArr("Date Desc");
+        FetchAndShowResults("Date Desc");
     }
 });
 
@@ -39,32 +50,27 @@ function spinnerOn() {
     setTimeout(()=>spinner.classList.remove("spinner-border"),2000);
 }
 
-async function init(){
-    const response = await fetch(myUrl);
+
+async function FetchAndShowResults(sortingOption='Sort By'){
+    const response = await fetch(resultsURL);
     const data = await response.json();
-    myArr = data.results;
-    BuildResults();
+    let myArr = await data.results;
+    sortingResultsByCriteria(myArr,sortingOption)
+    createHtmlElements(myArr);
 }
 
-async function updateMyArr(sortingOption){
-    const response = await fetch(myUrl);
-    const data = await response.json();
-    myArr = sorting(sortingOption);
-    BuildResults();
 
-}
-
-let serverMsg = "";
-async function serverWriteData(url){
+async function FetchFibonacciValueServerWithErrorMsg(url){
     const response = await fetch(url);
     try {
         if (!response.ok) {
             text = await response.text();
             serverMsg = text;
-            myMsg.classList.remove('errorMsg');
-            myMsg.classList.add('fortyTwoMsgStyle');
-            myMsg.innerText = serverMsg;
-            myY.innerText = 'Y';
+            errorMsg.classList.remove('errorMsg');
+            errorMsg.classList.add('fortyTwoMsgStyle');
+            errorMsg.innerText = serverMsg;
+            fibonacciValue.innerText = 'Y';
+            throw Error("");
         }
     }
     catch(err) {    
@@ -73,78 +79,76 @@ async function serverWriteData(url){
     finally {
         spinner.classList.remove("spinner-border");
         const data = await response.json();
-        myY.innerText = data.result;      
+        fibonacciValue.innerText = data.result;      
     }
 }
 
-let myBtn = document.getElementById('myBtn');
 
 myBtn.addEventListener('click', (e)=> {
     e.preventDefault();
-    isCalculationSaved = document.getElementById('saveCalc').checked;
+    isCalculationSaved = checkBox.checked;
     setTimeout(()=> {
         spinner.classList.remove("spinner-border");
     }
     , 2000);
-    appendNewResult(myIndex.value);
+    appendNewResult(fibonacciIndex.value);
 });
 
-let spinner = document.getElementById("spinner");
 
-
-function BuildResults() {
-    for (let i= myArr.length - 1; i>= 0; i--){
+function createHtmlElements(arr) {
+    for (let i= arr.length - 1; i>= 0; i--){
         let divItem = document.createElement('div');
         divItem.classList.add('mt-4-div');
-        divItem.innerHTML = stringify(myArr[i]);
-        container.append(divItem);
+        divItem.innerHTML = stringify(arr[i]);
+        containerListHolder.append(divItem);
     }   
 }
 
 
-
-
-function stringify(someObj) {
-    let str = `<span class="fs-5 border-bottom pb-2 mb-4 border-secondary">The Fibonacci of <b>${someObj.number}</b> is <b>${someObj.result}</b>. Calculated at: ${new Date(someObj.createdDate).toString()} (Israel Standard Time)</span>`;
+function stringify(objectInsideArr) {
+    const str = "<span class='fs-5 border-bottom pb-2 mb-4 border-secondary'>" +
+              "The Fibonacci of <b>" + objectInsideArr.number + "</b>" + 
+              " is <b> " + objectInsideArr.result + "</b>." +
+              " Calculated at: " + new Date(objectInsideArr.createdDate).toString() + "(Israel Standard Time)</span>";
     return str;
 }
 
 
-function appendNewResult(index){
-    if (index > 50) {
-        myMsg.classList.add('errorMsg');
-        myMsg.classList.remove('fortyTwoMsgStyle');
-        myY.innerText = 'Y';
-        myMsg.innerText = "Can't be larger than 50!";
+function appendNewResult(){
+    if (fibonacciIndex.value > 50) {
+        errorMsg.classList.add('errorMsg');
+        errorMsg.classList.remove('fortyTwoMsgStyle');
+        fibonacciValue.innerText = 'Y';
+        errorMsg.innerText = "Can't be larger than 50!";
     }
     else {
         if (isCalculationSaved) {
-            if(index === 42){
-                myMsg.classList.remove('errorMsg');
-                myMsg.classList.add('fortyTwoMsgStyle');
+            if(fibonacciIndex.value === 42){
+                errorMsg.classList.remove('errorMsg');
+                errorMsg.classList.add('fortyTwoMsgStyle');
             }        
             else {
-                myMsg.innerText = "";
+                errorMsg.innerText = "";
                 spinner.classList.add("spinner-border");
-                myMsg.classList.remove('errorMsg');
-                myMsg.classList.remove('fortyTwoMsgStyle');
+                errorMsg.classList.remove('errorMsg');
+                errorMsg.classList.remove('fortyTwoMsgStyle');
             }
-            serverWriteData(fibonacciUrl+index);
-            init();
+            FetchFibonacciValueServerWithErrorMsg(fibonacciValueURL+fibonacciIndex.value);
+            FetchAndShowResults();
         }
         else {        
-            myMsg.innerText = "";
+            errorMsg.innerText = "";
             spinner.classList.add("spinner-border");
-            myMsg.classList.remove('errorMsg');
-            myMsg.classList.remove('fortyTwoMsgStyle');
-            myY.innerText = FibonacciOfIndex(index);
+            errorMsg.classList.remove('errorMsg');
+            errorMsg.classList.remove('fortyTwoMsgStyle');
+            fibonacciValue.innerText = FibonacciOfIndex(fibonacciIndex.value);
         }
     }
 }
 
 
 function FibonacciOfIndex(n) { 
-    n = parseInt(myIndex.value); 
+    n = parseInt(fibonacciIndex.value); 
     let a = 0;
     let b = 1;
     let sum = 0;
@@ -160,39 +164,32 @@ function FibonacciOfIndex(n) {
     return sum;
 }
 
-function compareValuesByKeyAndOrder(a, b, order='asc'){
-        let comparison = 0;
-        if (a > b) {
-            comparison = -1;
-        }
-        else if (a < b) {
-            comparison = 1;
-        }
-        if(order === 'desc') {
-            comparison = comparison * -1; 
-        }
-        return comparison;
+
+function compareValuesByKeyAndOrder(a, b){
+    return a-b;
 }
 
 
-function sorting(option) {
+function sortingResultsByCriteria(arr, option) {
     switch(option){
+        case "Sort By":
+            arr.sort((a,b)=>compareValuesByKeyAndOrder(a.number,a.number));
+        break;
         case "Number Asc":
-            myArr = myArr.sort((a,b)=>compareValuesByKeyAndOrder(a.number,b.number));
+            arr.sort((a,b)=>compareValuesByKeyAndOrder(b.number,a.number));
         break;
 
         case "Number Desc":
-            myArr = myArr.sort((a,b)=>compareValuesByKeyAndOrder(a.number,b.number, 'desc'));
+            arr.sort((a,b)=>compareValuesByKeyAndOrder(a.number,b.number));
         break;
 
         case "Date Asc":
-            myArr = myArr.sort((a,b)=>compareValuesByKeyAndOrder(a.createdDate,b.createdDate));
+            arr.sort((a,b)=>compareValuesByKeyAndOrder(b.createdDate,a.createdDate));
         break;
 
         case "Date Desc":
-            myArr = myArr.sort((a,b)=>compareValuesByKeyAndOrder(a.createdDate,b.createdDate, 'desc'));
+            arr.sort((a,b)=>compareValuesByKeyAndOrder(a.createdDate,b.createdDate));
         break;
     }
-    return myArr;
 }
 
